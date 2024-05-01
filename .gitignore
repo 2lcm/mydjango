@@ -5,5 +5,5 @@ __pycache__
 /staticfiles
 /mediafiles
 .DS_Store
-
+.vscode/
 .env
