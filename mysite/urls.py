@@ -7,6 +7,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("core/", include("core.urls")),
     path("hottrack/", include("hottrack.urls")),
+    path("blog/", include("blog.urls")),
     path("", lambda request : redirect("hottrack:index")),
 ]
 
