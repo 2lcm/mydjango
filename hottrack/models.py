@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Dict
+from typing import Dict, Iterable
 from urllib.parse import quote
 
 from django.db import models
+from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.text import slugify
 
 
 class Song(models.Model):
     melon_uid = models.CharField(max_length=20, unique=True)
+    slug = models.SlugField(allow_unicode=True, blank=True)
     rank = models.PositiveSmallIntegerField()
     album_name = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
@@ -19,6 +22,28 @@ class Song(models.Model):
     genre = models.CharField(max_length=100)
     release_date = models.DateField()
     like_count = models.PositiveIntegerField()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["slug"])
+        ]
+
+    def save(self, force_insert: bool = ..., force_update: bool = ..., using: str | None = ..., update_fields: Iterable[str] | None = ...) -> None:
+        self.slugify()
+        return super().save(force_insert, force_update, using, update_fields)
+
+    def slugify(self, force=False):
+        if force or not self.slug:
+            self.slug = slugify(self.name, allow_unicode=True)
+
+    def get_absolute_url(self) -> str:
+        return reverse("hottrack:song_detail", args=[
+            self.release_date.year,
+            self.release_date.month,
+            self.release_date.day,
+            self.slug
+        ])
+    
 
     @property
     def cover_image_tag(self):

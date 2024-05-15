@@ -5,8 +5,9 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("core/", include("core.urls")),
     path("hottrack/", include("hottrack.urls")),
-    path("", lambda request: redirect("/hottrack/")),
+    path("", lambda request : redirect("hottrack:index")),
 ]
 
 

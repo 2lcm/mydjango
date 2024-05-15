@@ -11,7 +11,7 @@ env = environ.Env(
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env file
-environ.Env.read_env(BASE_DIR / ".env")
+env.read_env(BASE_DIR / ".env")
 
 # False if not in os.environ because of casting above
 DEBUG = env("DEBUG")
@@ -36,9 +36,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
     # 3rd party
+    "django_bootstrap5",
+    'django_extensions',
+
     # app
     "hottrack",
+    "core",
 ]
 if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
@@ -130,3 +135,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # django-debug-toolbar
 INTERNAL_IPS = ["127.0.0.1", env("INTERNAL_IP")]
+
+# message level
+if DEBUG:
+    from django.contrib.messages import constants as messages_constants
+
+    MESSAGE_LEVEL = messages_constants.DEBUG
