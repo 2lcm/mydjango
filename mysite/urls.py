@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.urls import path, include
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path(f"{settings.ADMIN_PREFIX}/", admin.site.urls),
     path("core/", include("core.urls")),
     path("hottrack/", include("hottrack.urls")),
     path("blog/", include("blog.urls")),

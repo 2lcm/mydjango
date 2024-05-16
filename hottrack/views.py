@@ -16,30 +16,6 @@ from io import BytesIO
 import pandas as pd
 
 
-# def index(request: HttpRequest, release_date: datetime.date = None) -> HttpResponse:
-#     query = request.GET.get("query", "").strip()
-
-#     song_qs: QuerySet[Song] = Song.objects.all()
-
-#     if release_date:
-#         song_qs = song_qs.filter(release_date=release_date)
-
-#     if query:
-#         song_qs = song_qs.filter(
-#             Q(name__icontains=query)
-#             | Q(artist_name__icontains=query)
-#             | Q(album_name__icontains=query)
-#         )
-
-#     return render(
-#         request=request,
-#         template_name="hottrack/index.html",
-#         context={
-#             "song_list": song_qs,
-#             "query": query,
-#         },
-#     )
-
 class IndexView(ListView):
     model = Song
     template_name="hottrack/index.html"
@@ -57,9 +33,11 @@ class IndexView(ListView):
         if query:
             qs = qs.filter(
                 Q(name__icontains=query)
-                | Q(artist_name__icontains=query)
-                | Q(album_name__icontains=query)
+                | Q(artist__name__icontains=query)
+                | Q(album__name__icontains=query)
             )
+
+        qs = qs.select_related("artist")
         return qs
 
 index = IndexView.as_view()
@@ -72,7 +50,7 @@ def cover_png(request, pk):
     song = get_object_or_404(Song, pk=pk)
 
     cover_image = make_cover_image(
-        song.cover_url, song.artist_name, canvas_size=canvas_size
+        song.cover_url, song.artist.name, canvas_size=canvas_size
     )
 
     response = HttpResponse(content_type="image/png")
@@ -83,16 +61,6 @@ def cover_png(request, pk):
 
 class SongDetailView(DetailView):
     model=Song
-
-    def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.get_queryset()
-
-        melon_uid = self.kwargs.get("melon_uid")
-        if melon_uid:
-            return get_object_or_404(queryset, melon_uid=melon_uid)
-
-        return super().get_object(queryset)
 
 
 def export(request: HttpRequest, format: Literal["csv", "xlsx"]) -> HttpResponse:

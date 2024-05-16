@@ -9,7 +9,7 @@ app_name = "hottrack"
 urlpatterns = [
     path("", views.index, name="index"),
     path("<int:pk>/", views.SongDetailView.as_view(), name="song_detail"),
-    path("melon-<int:melon_uid>/", views.SongDetailView.as_view(), name="song_detail"),
+    # path("melon-<int:melon_uid>/", views.SongDetailView.as_view(), name="song_detail"),
     # path("archives/<date:release_date>/", views.index),
     path("archives/today/", views.SongTodayArchiveView.as_view(), name="song_archive_today"),
     path("archives/<int:year>/", views.SongYearArchiveView.as_view(), name="song_archive_year"),

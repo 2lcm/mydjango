@@ -1,4 +1,5 @@
 from pathlib import Path
+from django.conf.global_settings import AUTH_USER_MODEL
 import environ
 
 env = environ.Env(
@@ -42,10 +43,14 @@ INSTALLED_APPS = [
     'django_extensions',
 
     # app
+    "accounts",
     "hottrack",
     "core",
     "blog",
     "shop",
+    "school",
+    "weblog",
+    
 ]
 if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
@@ -105,6 +110,9 @@ DATABASES = {
 }
 
 
+AUTH_USER_MODEL = "accounts.User"
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -154,3 +162,6 @@ if DEBUG:
     from django.contrib.messages import constants as messages_constants
 
     MESSAGE_LEVEL = messages_constants.DEBUG
+
+
+ADMIN_PREFIX = "admin" if DEBUG else env("ADMIN_PREFIX")
